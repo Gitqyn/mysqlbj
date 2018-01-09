@@ -1,0 +1,59 @@
+
+group by与order排序（as可以重命名）
+mysql> select category ,sum(purchase_price) as sum from product where purchase_price group by category order by category desc;
+
++----------+-------+
+| category | sum   |
++----------+-------+
+|        3 | 58.80 |
+|        2 | 75.40 |
+|        1 | 23.00 |
++----------+-------+
+with rollup  可以实现在分组统计数据基础上再进行相同的统计（SUM,AVG,COUNT…）
+``` mysql
+mysql> select category ,sum(purchase_price) as sum from product where purchase_price group by category with rollup;
++----------+--------+
+| category | sum    |
++----------+--------+
+|        1 |  23.00 |
+|        2 |  75.40 |
+|        3 |  58.80 |
+|     NULL | 157.20 |
++----------+--------+
+```
+
+``` mysql
+可以使用 coalesce 来设置一个可以取代 NUll 的名称. coalesce 语法： select coalesce(a,b,c);
+mysql> select coalesce(category,'总和')as a ,sum(purchase_price) as sum from product where purchase_price group by category with rollup;
++------+--------+
+| a    | sum    |
++------+--------+
+| 1    |  23.00 |
+| 2    |  75.40 |
+| 3    |  58.80 |
+| 总和    | 157.20 |
++------+--------+
+
+```
+
+
+
+
+#外键
+
+alter table 表名  add (constraint 外键名)  foreign key ()references outTable() on delete cascade on update cascade;
+说明：把id列 设为外键 参照外表outTable的id列 当外键的值删除 本表中对应的列筛 除 当外键的值改变 本表中对应的列值改变。
+#多表查询
+
+SELECT 字段名 FROM 表1，表2 … WHERE 表1.字段 = 表2.字段 AND 其它查询条件；
+select * from categorys,product where categorys.id=product.category and categorys.name like '蔬菜类'
+
+#连接查询
+  1、  INNER JOIN（内连接,或等值连接）：获取两个表中字段匹配关系的记录。 
+  2、  LEFT JOIN（左连接）：获取左表所有记录，即使右表没有对应匹配的记录。
+  3、  RIGHT JOIN（右连接）： 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹
+  配的记录
+
+
+
+
